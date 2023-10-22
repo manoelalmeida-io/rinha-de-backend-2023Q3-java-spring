@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -72,8 +71,18 @@ public class PessoaController {
   }
 
   @GetMapping("/pessoas")
-  public ResponseEntity<List<Pessoa>> buscarPorTermo(@RequestParam String t) {
-    return ResponseEntity.ok(new ArrayList<>());
+  public ResponseEntity<List<PessoaDto>> buscarPorTermo(@RequestParam String t) {
+    return ResponseEntity.ok(this.pessoaRepository.findByTermo(t)
+        .stream().map(domain -> {
+          PessoaDto dto = new PessoaDto();
+          dto.setId(domain.getId());
+          dto.setApelido(domain.getApelido());
+          dto.setNome(domain.getNome());
+          dto.setNascimento(domain.getNascimento());
+          dto.setStack(domain.getStack() != null ? Arrays.asList(domain.getStack().split(",")) : null);
+
+          return dto;
+        }).toList());
   }
 
   @GetMapping("/contagem-pessoas")

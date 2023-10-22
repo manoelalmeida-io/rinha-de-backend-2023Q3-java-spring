@@ -8,6 +8,8 @@ import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,7 +28,7 @@ public class PessoaDto {
   private String nome;
 
   @DateTimeFormat(pattern = "yyyy-MM-dd")
-  private String nascimento;
+  private LocalDate nascimento;
 
   private List<@Valid @Length(max = 32) String> stack;
 
@@ -54,11 +56,11 @@ public class PessoaDto {
     this.nome = nome;
   }
 
-  public String getNascimento() {
+  public LocalDate getNascimento() {
     return nascimento;
   }
 
-  public void setNascimento(String nascimento) {
+  public void setNascimento(LocalDate nascimento) {
     this.nascimento = nascimento;
   }
 

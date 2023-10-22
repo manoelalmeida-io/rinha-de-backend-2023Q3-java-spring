@@ -4,10 +4,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
@@ -16,17 +15,9 @@ public class Pessoa {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
-
-  @NotNull
-  @Length(max = 32)
   private String apelido;
-
-  @NotNull
-  @Length(max = 100)
   private String nome;
-
-  @DateTimeFormat(pattern = "yyyy-MM-dd")
-  private String nascimento;
+  private LocalDate nascimento;
 
   private String stack;
 
@@ -54,11 +45,11 @@ public class Pessoa {
     this.nome = nome;
   }
 
-  public String getNascimento() {
+  public LocalDate getNascimento() {
     return nascimento;
   }
 
-  public void setNascimento(String nascimento) {
+  public void setNascimento(LocalDate nascimento) {
     this.nascimento = nascimento;
   }
 
