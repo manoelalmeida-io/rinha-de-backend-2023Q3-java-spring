@@ -40,7 +40,7 @@ public class PessoaController {
     domain.setApelido(dto.getApelido());
     domain.setNome(dto.getNome());
     domain.setNascimento(dto.getNascimento());
-    domain.setStack(dto.getStack() != null ? String.join(", ", dto.getStack()) : null);
+    domain.setStack(dto.getStack() != null ? String.join(",", dto.getStack()) : null);
 
     this.pessoaRepository.save(domain);
 
