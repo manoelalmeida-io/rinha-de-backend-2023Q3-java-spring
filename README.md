@@ -1,1 +1,1 @@
-# rinha-de-backend-2023Q3-java
+# rinha-de-backend-2023Q3-java-spring

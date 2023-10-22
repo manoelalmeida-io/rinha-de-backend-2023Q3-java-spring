@@ -1,0 +1,68 @@
+version: '3.5'
+
+services:
+  api1:
+    build: .
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.35'
+          memory: '1.0GB'
+    environment:
+      DB_HOST: db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: rinhadb
+    networks:
+      - system-network
+
+  api2:
+    build: .
+    depends_on:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '0.35'
+          memory: '1.0GB'
+    environment:
+      DB_HOST: db
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: rinhadb
+    networks:
+      - system-network
+
+  db:
+    image: postgres
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: '0.5GB'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rinhadb
+    networks:
+      - system-network
+
+  nginx:
+    image: nginx:latest
+    depends_on:
+      - api1
+      - api2
+    ports:
+      - "9999:9999"
+    deploy:
+      resources:
+        limits:
+          cpus: '0.3'
+          memory: '0.5GB'
+    networks:
+      - system-network
+
+networks:
+  system-network:

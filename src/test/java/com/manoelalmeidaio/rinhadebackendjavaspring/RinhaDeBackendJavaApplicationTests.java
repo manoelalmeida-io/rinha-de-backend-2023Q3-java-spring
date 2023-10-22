@@ -1,4 +1,4 @@
-package com.manoelalmeidaio.rinhadebackendjava;
+package com.manoelalmeidaio.rinhadebackendjavaspring;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
