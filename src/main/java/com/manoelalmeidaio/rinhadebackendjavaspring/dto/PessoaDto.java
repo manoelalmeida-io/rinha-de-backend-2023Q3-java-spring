@@ -1,17 +1,17 @@
-package com.manoelalmeidaio.rinhadebackendjavaspring.domain;
+package com.manoelalmeidaio.rinhadebackendjavaspring.dto;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.List;
 import java.util.UUID;
 
-@Entity
-public class Pessoa {
+public class PessoaDto {
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,7 +28,7 @@ public class Pessoa {
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private String nascimento;
 
-  private String stack;
+  private List<@Valid @Length(max = 32) String> stack;
 
   public UUID getId() {
     return id;
@@ -62,11 +62,11 @@ public class Pessoa {
     this.nascimento = nascimento;
   }
 
-  public String getStack() {
+  public List<String> getStack() {
     return stack;
   }
 
-  public void setStack(String stack) {
+  public void setStack(List<String> stack) {
     this.stack = stack;
   }
 }

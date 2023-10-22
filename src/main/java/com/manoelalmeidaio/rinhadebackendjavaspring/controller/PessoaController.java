@@ -1,6 +1,7 @@
 package com.manoelalmeidaio.rinhadebackendjavaspring.controller;
 
 import com.manoelalmeidaio.rinhadebackendjavaspring.domain.Pessoa;
+import com.manoelalmeidaio.rinhadebackendjavaspring.dto.PessoaDto;
 import com.manoelalmeidaio.rinhadebackendjavaspring.repository.PessoaRepository;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -14,7 +15,9 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @RestController
@@ -27,26 +30,45 @@ public class PessoaController {
   }
 
   @PostMapping("/pessoas")
-  public ResponseEntity<Pessoa> cadastrar(@Valid @RequestBody Pessoa pessoa) {
+  public ResponseEntity<PessoaDto> cadastrar(@Valid @RequestBody PessoaDto dto) {
 
-    if (this.pessoaRepository.existsByNome(pessoa.getNome())) {
+    if (this.pessoaRepository.existsByNome(dto.getNome())) {
       return ResponseEntity.unprocessableEntity().build();
     }
 
-    this.pessoaRepository.save(pessoa);
+    Pessoa domain = new Pessoa();
+    domain.setApelido(dto.getApelido());
+    domain.setNome(dto.getNome());
+    domain.setNascimento(dto.getNascimento());
+    domain.setStack(dto.getStack() != null ? String.join(", ", dto.getStack()) : null);
+
+    this.pessoaRepository.save(domain);
 
     URI location = ServletUriComponentsBuilder
         .fromCurrentRequest()
         .path("/{id}")
-        .buildAndExpand(pessoa.getId())
+        .buildAndExpand(domain.getId())
         .toUri();
 
-    return ResponseEntity.created(location).body(pessoa);
+    dto.setId(domain.getId());
+    return ResponseEntity.created(location).body(dto);
   }
 
   @GetMapping("/pessoas/{id}")
-  public ResponseEntity<Pessoa> buscarPorId(@PathVariable String uuid) {
-    return ResponseEntity.of(this.pessoaRepository.findById(UUID.fromString(uuid)));
+  public ResponseEntity<PessoaDto> buscarPorId(@PathVariable String id) {
+    Optional<PessoaDto> encontrada = this.pessoaRepository.findById(UUID.fromString(id))
+        .map(domain -> {
+          PessoaDto dto = new PessoaDto();
+          dto.setId(domain.getId());
+          dto.setApelido(domain.getApelido());
+          dto.setNome(domain.getNome());
+          dto.setNascimento(domain.getNascimento());
+          dto.setStack(domain.getStack() != null ? Arrays.asList(domain.getStack().split(",")) : null);
+
+          return dto;
+        });
+
+    return ResponseEntity.of(encontrada);
   }
 
   @GetMapping("/pessoas")
