@@ -1,8 +1,5 @@
 package com.manoelalmeidaio.rinhadebackendjavaspring.dto;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.Length;
@@ -14,8 +11,6 @@ import java.util.UUID;
 
 public class PessoaDto {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
 
   @NotNull
