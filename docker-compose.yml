@@ -2,7 +2,7 @@ version: '3.5'
 
 services:
   api1:
-    build: .
+    image: docker.io/library/rinha-de-backend-2023q3-java-spring:0.0.1-SNAPSHOT
     depends_on:
       - db
     deploy:
@@ -19,7 +19,7 @@ services:
       - system-network
 
   api2:
-    build: .
+    image: docker.io/library/rinha-de-backend-2023q3-java-spring:0.0.1-SNAPSHOT
     depends_on:
       - db
     deploy:
