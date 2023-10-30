@@ -1,8 +1,7 @@
 package com.manoelalmeidaio.rinhadebackendjavaspring.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
 import java.time.LocalDate;
@@ -12,13 +11,14 @@ import java.util.UUID;
 public class Pessoa {
 
   @Id
-  @GeneratedValue(strategy = GenerationType.UUID)
   private UUID id;
   private String apelido;
   private String nome;
   private LocalDate nascimento;
-
   private String stack;
+
+  @Column(insertable = false, updatable = false)
+  private String buscaTrgm;
 
   public UUID getId() {
     return id;
@@ -58,5 +58,13 @@ public class Pessoa {
 
   public void setStack(String stack) {
     this.stack = stack;
+  }
+
+  public String getBuscaTrgm() {
+    return buscaTrgm;
+  }
+
+  public void setBuscaTrgm(String buscaTrgm) {
+    this.buscaTrgm = buscaTrgm;
   }
 }

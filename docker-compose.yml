@@ -2,54 +2,57 @@ version: '3.5'
 
 services:
   api1:
+    network_mode: host
     image: docker.io/library/rinha-de-backend-2023q3-java-spring:0.0.1-SNAPSHOT
     depends_on:
       - db
     deploy:
       resources:
         limits:
-          cpus: '0.25'
-          memory: '0.5GB'
+          cpus: '0.35'
+          memory: '1.0GB'
     environment:
-      DB_HOST: db
+      SERVER_PORT: 8001
+      DB_HOST: localhost
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       DB_DATABASE: rinhadb
-    networks:
-      - system-network
 
   api2:
+    network_mode: host
     image: docker.io/library/rinha-de-backend-2023q3-java-spring:0.0.1-SNAPSHOT
     depends_on:
       - db
     deploy:
       resources:
         limits:
-          cpus: '0.25'
-          memory: '0.5GB'
+          cpus: '0.35'
+          memory: '1.00GB'
     environment:
-      DB_HOST: db
+      SERVER_PORT: 8002
+      DB_HOST: localhost
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
       DB_DATABASE: rinhadb
-    networks:
-      - system-network
 
   db:
+    network_mode: host
     image: postgres
     deploy:
       resources:
         limits:
-          cpus: '0.75'
-          memory: '1.5GB'
+          cpus: '0.5'
+          memory: '0.5GB'
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: rinhadb
-    networks:
-      - system-network
+    volumes:
+      - ./postgresql.conf:/docker-entrypoint-initdb.d/postgresql.conf
+    command: postgres -c config_file=/docker-entrypoint-initdb.d/postgresql.conf
 
   nginx:
+    network_mode: host
     image: nginx:latest
     depends_on:
       - api1
@@ -61,10 +64,5 @@ services:
     deploy:
       resources:
         limits:
-          cpus: '0.25'
+          cpus: '0.3'
           memory: '0.5GB'
-    networks:
-      - system-network
-
-networks:
-  system-network:

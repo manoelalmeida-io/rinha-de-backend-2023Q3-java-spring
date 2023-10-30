@@ -12,6 +12,6 @@ public interface PessoaRepository extends JpaRepository<Pessoa, UUID> {
 
   boolean existsByNome(String nome);
 
-  @Query("select p from Pessoa p where nome like :t or apelido like :t or stack like :t")
+  @Query("select p from Pessoa p where p.buscaTrgm like :t")
   List<Pessoa> findByTermo(@Param("t") String t);
 }
