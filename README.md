@@ -26,7 +26,7 @@ Backend feito em Java com Spring Boot para atender aos requisitos da
 ### Redis
 * Cache compartilhado
 
-### NGIX
+### NGINX
 * Balancemento de carga
 
 ## Implementação
