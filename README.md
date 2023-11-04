@@ -77,7 +77,7 @@ Após isso podemos iniciar todos os container com:
 docker compose up
 ```
 
-## Referencias:
+## Referências:
 
 https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html \
 https://docs.spring.io/spring-framework/reference/core/aot.html \
