@@ -75,10 +75,10 @@ docker compose up
 
 ## Referencias:
 
-https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html
-https://docs.spring.io/spring-framework/reference/core/aot.html
-https://developer.redis.com/develop/java/redis-and-spring-course/lesson_2/
-https://www.baeldung.com/spring-jdbc-batch-inserts
-https://redisson.org/glossary/write-through-and-write-behind-caching.html
+https://docs.spring.io/spring-boot/docs/current/reference/html/native-image.html \
+https://docs.spring.io/spring-framework/reference/core/aot.html \
+https://developer.redis.com/develop/java/redis-and-spring-course/lesson_2/ \
+https://www.baeldung.com/spring-jdbc-batch-inserts \
+https://redisson.org/glossary/write-through-and-write-behind-caching.html \
 https://www.postgresql.org/docs/current/pgtrgm.html
 
