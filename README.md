@@ -38,6 +38,8 @@ As APIs precisavam expor os seguintes endpoints:
 * `GET /pessoas?t=[:termo da busca]` – para fazer uma busca por pessoas.
 * `GET /contagem-pessoas` – endpoint especial para contagem de pessoas cadastradas.
 
+---
+
 ### `POST`  `/pessoas`
 
 Nesse endpoint foi utilizado o cacheamento para evitar que muitos inserts fossem realizados de uma 
@@ -47,6 +49,8 @@ através de uma rotina persistimos o cache no banco de dados com batch inserts.
 Saiba mais: \
 https://redisson.org/glossary/write-through-and-write-behind-caching.html \
 https://www.baeldung.com/spring-jdbc-batch-inserts
+
+---
 
 ### `GET` `/pessoas?t=[:termo da busca]`
 
