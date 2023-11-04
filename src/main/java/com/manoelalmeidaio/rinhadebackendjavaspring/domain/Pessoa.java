@@ -4,17 +4,17 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
-import java.time.LocalDate;
+import java.io.Serializable;
 import java.util.UUID;
 
 @Entity
-public class Pessoa {
+public class Pessoa implements Serializable {
 
   @Id
   private UUID id;
   private String apelido;
   private String nome;
-  private LocalDate nascimento;
+  private String nascimento;
   private String stack;
 
   @Column(insertable = false, updatable = false)
@@ -44,11 +44,11 @@ public class Pessoa {
     this.nome = nome;
   }
 
-  public LocalDate getNascimento() {
+  public String getNascimento() {
     return nascimento;
   }
 
-  public void setNascimento(LocalDate nascimento) {
+  public void setNascimento(String nascimento) {
     this.nascimento = nascimento;
   }
 

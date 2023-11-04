@@ -3,9 +3,9 @@ package com.manoelalmeidaio.rinhadebackendjavaspring.controller;
 import com.manoelalmeidaio.rinhadebackendjavaspring.domain.Pessoa;
 import com.manoelalmeidaio.rinhadebackendjavaspring.dto.PessoaDto;
 import com.manoelalmeidaio.rinhadebackendjavaspring.mapper.PessoaMapper;
-import com.manoelalmeidaio.rinhadebackendjavaspring.queue.PessoaQueue;
 import com.manoelalmeidaio.rinhadebackendjavaspring.repository.PessoaRepository;
 import jakarta.validation.Valid;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.context.request.async.DeferredResult;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -21,54 +20,48 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 
 @RestController
 public class PessoaController {
 
-  private final PessoaQueue pessoaQueue;
   private final PessoaRepository pessoaRepository;
-  private final Executor executor = Executors.newFixedThreadPool(100);
+  private final RedisTemplate<String, Pessoa> cache;
 
-  public PessoaController(PessoaRepository pessoaRepository, PessoaQueue pessoaQueue) {
+  public PessoaController(PessoaRepository pessoaRepository, RedisTemplate<String, Pessoa> cache) {
     this.pessoaRepository = pessoaRepository;
-    this.pessoaQueue = pessoaQueue;
+    this.cache = cache;
   }
 
   @PostMapping("/pessoas")
-  public DeferredResult<ResponseEntity<PessoaDto>> cadastrar(@Valid @RequestBody PessoaDto dto) {
-
-    DeferredResult<ResponseEntity<PessoaDto>> deferredResult = new DeferredResult<>(10000L);
-
+  public ResponseEntity<PessoaDto> cadastrar(@Valid @RequestBody PessoaDto dto) {
     UUID id = UUID.randomUUID();
 
-    URI location = ServletUriComponentsBuilder
-        .fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
+    URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(id).toUri();
 
-    CompletableFuture.runAsync(() -> {
-      if (this.pessoaRepository.existsByNome(dto.getNome())) {
-        deferredResult.setResult(ResponseEntity.unprocessableEntity().build());
-        return;
-      }
+    Pessoa domain = PessoaMapper.toDomain(id, dto);
 
-      Pessoa domain = new Pessoa();
-      domain.setId(id);
-      domain.setApelido(dto.getApelido());
-      domain.setNome(dto.getNome());
-      domain.setNascimento(dto.getNascimento());
-      domain.setStack(dto.getStack() != null ? String.join(",", dto.getStack()) : null);
+    var existeCache = cache.hasKey(domain.getNome());
 
-      pessoaQueue.add(domain, location, deferredResult);
-    }, executor);
+    if (Boolean.TRUE.equals(existeCache) || this.pessoaRepository.existsByNome(domain.getNome())) {
+      return ResponseEntity.unprocessableEntity().build();
+    }
 
-    return deferredResult;
+    cache.opsForValue().set(domain.getId().toString(), domain);
+    cache.opsForValue().set(domain.getNome(), domain);
+    cache.opsForList().rightPush("fila", domain);
+
+    dto.setId(id);
+    return ResponseEntity.created(location).body(dto);
   }
 
   @GetMapping("/pessoas/{id}")
   public ResponseEntity<PessoaDto> buscarPorId(@PathVariable String id) {
+    var pessoaCache = this.cache.opsForValue().get(id);
+
+    if (pessoaCache != null) {
+      return ResponseEntity.ok(PessoaMapper.toDto(pessoaCache));
+    }
+
     Optional<PessoaDto> encontrada = this.pessoaRepository.findById(UUID.fromString(id)).map(PessoaMapper::toDto);
     return ResponseEntity.of(encontrada);
   }

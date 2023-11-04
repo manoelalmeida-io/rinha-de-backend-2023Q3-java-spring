@@ -1,48 +1,49 @@
 package com.manoelalmeidaio.rinhadebackendjavaspring.queue;
 
 import com.manoelalmeidaio.rinhadebackendjavaspring.domain.Pessoa;
-import com.manoelalmeidaio.rinhadebackendjavaspring.dto.PessoaDto;
-import com.manoelalmeidaio.rinhadebackendjavaspring.repository.PessoaRepository;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.async.DeferredResult;
 
-import java.net.URI;
-import java.util.ArrayList;
+import java.sql.PreparedStatement;
 import java.util.List;
 
 @Component
 @EnableScheduling
 public class PessoaQueue {
 
-  private final PessoaRepository pessoaRepository;
+  private final JdbcTemplate jdbcTemplate;
 
-  private List<PessoaCommand> pessoas;
+  private final RedisTemplate<String, Pessoa> cache;
 
-  public PessoaQueue(PessoaRepository pessoaRepository) {
-    this.pessoaRepository = pessoaRepository;
-    this.pessoas = new ArrayList<>();
+  public PessoaQueue(JdbcTemplate jdbcTemplate, RedisTemplate<String, Pessoa> cache) {
+    this.jdbcTemplate = jdbcTemplate;
+    this.cache = cache;
   }
 
-  public synchronized void add(Pessoa pessoa, URI location, DeferredResult<ResponseEntity<PessoaDto>> deferredResult) {
-    this.pessoas.add(new PessoaCommand(pessoa, location, deferredResult));
-  }
-
-  @Scheduled(fixedRate = 1000L)
+  @Scheduled(fixedDelay = 1000L)
   public void insertAll() {
 
-    if (!this.pessoas.isEmpty()) {
-      List<PessoaCommand> workPool = List.copyOf(this.pessoas);
-      this.pessoas.removeAll(workPool);
+    Long tamanho = cache.opsForList().size("fila");
 
-      List<Pessoa> pessoasInsert = workPool.stream().map(PessoaCommand::getPessoa).toList();
+    if (tamanho == null) {
+      return;
+    }
 
-      this.pessoaRepository.saveAll(pessoasInsert);
+    List<Pessoa> workQueue = cache.opsForList().leftPop("fila", tamanho);
 
-      workPool.parallelStream().forEach(command ->
-          command.getDeferredResult().setResult(ResponseEntity.created(command.getLocation()).body(command.getDto())));
+    if (workQueue != null && !workQueue.isEmpty()) {
+      var sql = "INSERT INTO pessoa (id, nome, apelido, nascimento, stack) VALUES (?, ?, ?, ?, ?)";
+
+      jdbcTemplate.batchUpdate(sql, workQueue, workQueue.size(), (PreparedStatement ps, Pessoa pessoa) -> {
+        ps.setObject(1, pessoa.getId());
+        ps.setString(2, pessoa.getNome());
+        ps.setString(3, pessoa.getApelido());
+        ps.setString(4, pessoa.getNascimento());
+        ps.setString(5, pessoa.getStack());
+      });
     }
   }
 }
