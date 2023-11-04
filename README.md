@@ -72,7 +72,7 @@ Monte a imagem da aplicação spring nativa:
 gradle bootBuildImage
 ```
 
-Após isso podemos iniciar todos os container com:
+Após isso podemos iniciar todos os containers com:
 ```bash
 docker compose up
 ```
