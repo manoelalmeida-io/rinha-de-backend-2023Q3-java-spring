@@ -1,6 +1,5 @@
-package com.manoelalmeidaio.rinhadebackendjavaspring.queue;
+package com.manoelalmeidaio.rinhadebackendjavaspring.core.pessoa;
 
-import com.manoelalmeidaio.rinhadebackendjavaspring.domain.Pessoa;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -23,7 +22,7 @@ public class PessoaQueue {
     this.cache = cache;
   }
 
-  @Scheduled(fixedDelay = 1000L)
+  @Scheduled(fixedDelay = 2000L)
   public void insertAll() {
 
     Long tamanho = cache.opsForList().size("fila");

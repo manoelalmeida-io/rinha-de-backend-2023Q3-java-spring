@@ -1,4 +1,4 @@
-package com.manoelalmeidaio.rinhadebackendjavaspring.dto;
+package com.manoelalmeidaio.rinhadebackendjavaspring.core.pessoa;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;

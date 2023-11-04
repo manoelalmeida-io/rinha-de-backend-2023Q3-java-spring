@@ -1,6 +1,6 @@
 package com.manoelalmeidaio.rinhadebackendjavaspring.config;
 
-import com.manoelalmeidaio.rinhadebackendjavaspring.domain.Pessoa;
+import com.manoelalmeidaio.rinhadebackendjavaspring.core.pessoa.Pessoa;
 import org.springframework.aot.hint.RuntimeHints;
 import org.springframework.aot.hint.RuntimeHintsRegistrar;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.manoelalmeidaio.rinhadebackendjavaspring.domain;
+package com.manoelalmeidaio.rinhadebackendjavaspring.core.pessoa;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

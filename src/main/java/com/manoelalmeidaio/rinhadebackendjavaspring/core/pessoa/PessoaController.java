@@ -1,9 +1,5 @@
-package com.manoelalmeidaio.rinhadebackendjavaspring.controller;
+package com.manoelalmeidaio.rinhadebackendjavaspring.core.pessoa;
 
-import com.manoelalmeidaio.rinhadebackendjavaspring.domain.Pessoa;
-import com.manoelalmeidaio.rinhadebackendjavaspring.dto.PessoaDto;
-import com.manoelalmeidaio.rinhadebackendjavaspring.mapper.PessoaMapper;
-import com.manoelalmeidaio.rinhadebackendjavaspring.repository.PessoaRepository;
 import jakarta.validation.Valid;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;

@@ -1,7 +1,4 @@
-package com.manoelalmeidaio.rinhadebackendjavaspring.mapper;
-
-import com.manoelalmeidaio.rinhadebackendjavaspring.domain.Pessoa;
-import com.manoelalmeidaio.rinhadebackendjavaspring.dto.PessoaDto;
+package com.manoelalmeidaio.rinhadebackendjavaspring.core.pessoa;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

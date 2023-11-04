@@ -1,6 +1,6 @@
 package com.manoelalmeidaio.rinhadebackendjavaspring.config;
 
-import com.manoelalmeidaio.rinhadebackendjavaspring.domain.Pessoa;
+import com.manoelalmeidaio.rinhadebackendjavaspring.core.pessoa.Pessoa;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
